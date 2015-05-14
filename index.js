@@ -19,8 +19,6 @@ module.exports = function (opts) {
 
     var data = this.session[key] || defaultValue;
 
-    delete this.session[key];
-
     Object.defineProperty(this, 'flash', {
       enumerable: true,
       get: function() {
@@ -33,8 +31,8 @@ module.exports = function (opts) {
 
     yield *next;
 
-    if (this.status == 302 && this.session && !(this.session[key])) {
-      this.session[key] = data;
+    if (this.status != 302){
+      delete this.session[key];
     }
   };
 };

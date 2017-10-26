@@ -14,7 +14,7 @@ module.exports = function (opts) {
   var key = opts.key || 'koa-flash';
   var defaultValue = opts.defaultValue || {};
 
-  return function *flash(next) {
+  return function async flash(next) {
     if (this.session === undefined) throw new Error('koa-flash requires the koa-session middleware.');
 
     var data = this.session[key] || defaultValue;
@@ -29,7 +29,7 @@ module.exports = function (opts) {
       }
     });
 
-    yield *next;
+    await next;
 
     if (this.status != 302){
       delete this.session[key];

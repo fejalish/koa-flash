@@ -14,12 +14,12 @@ module.exports = function (opts) {
   var key = opts.key || 'koa-flash';
   var defaultValue = opts.defaultValue || {};
 
-  return function async flash(next) {
-    if (this.session === undefined) throw new Error('koa-flash requires the koa-session middleware.');
+  return async (ctx, next) => {
+    if (ctx.session === undefined) throw new Error('koa-flash requires the koa-session middleware.');
 
-    var data = this.session[key] || defaultValue;
+    var data = ctx.session[key] || defaultValue;
 
-    Object.defineProperty(this, 'flash', {
+    Object.defineProperty(ctx, 'flash', {
       enumerable: true,
       get: function() {
         return data;
@@ -29,10 +29,10 @@ module.exports = function (opts) {
       }
     });
 
-    await next;
+    await next();
 
-    if (this.status != 302){
-      delete this.session[key];
+    if (ctx.status != 302){
+      delete ctx.session[key];
     }
   };
 };
